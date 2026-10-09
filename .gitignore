@@ -1,0 +1,36 @@
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# Xcode / iOS
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+**/xcuserdata/
+**/*.xcuserstate
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Native cores (built by scripts/build_core.sh — ~200MB, не храним в git)
+ios/Frameworks/
+third_party/
+
+# Tooling
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+__pycache__/
+*.pyc

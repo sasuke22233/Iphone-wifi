@@ -1,0 +1,31 @@
+name: aura_vpn
+description: >-
+  Aura VPN — красивый VPN-клиент для iPhone в стиле Happ: подписки и профили
+  VLESS (Reality), VMess, Trojan, Shadowsocks, Hysteria2, TUIC, SOCKS,
+  транспорты TCP/WS/gRPC/H2/HTTPUpgrade/xHTTP/mKCP/QUIC, TLS & REALITY,
+  раздача Wi-Fi с уже подключённым VPN (Personal Hotspot + общий SOCKS5-прокси).
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.2.3
+  http: ^1.2.1
+  qr_flutter: ^4.1.0
+  share_plus: ^9.0.0
+  mobile_scanner: ^5.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
