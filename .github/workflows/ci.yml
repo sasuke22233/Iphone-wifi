@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+  validate-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check pbxproj balance and icons
+        run: |
+          python3 - <<'EOF'
+          p = open('ios/Runner.xcodeproj/project.pbxproj').read()
+          assert p.count('{') == p.count('}'), 'pbxproj braces'
+          assert p.count('(') == p.count(')'), 'pbxproj parens'
+          assert 'com.auravpn.app.packet-tunnel' in p
+          import os
+          assert os.path.exists('ios/Runner/Assets.xcassets/AppIcon.appiconset/icon-1024.png')
+          print('project OK')
+          EOF
