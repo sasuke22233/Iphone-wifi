@@ -50,9 +50,29 @@
 
 ## 📱 Установка на iPhone (Sideloadly)
 
-Готовую инструкцию — **[docs/Sideloadly.md](docs/Sideloadly.md)**.
-Кратко: соберите `.ipa` на macOS ([docs/BUILD.md](docs/BUILD.md)) →
-откройте в Sideloadly → установите.
+### Шаг 1. Получите IPA
+
+**Вариант А — готовый файл (рекомендуется):**
+1. Откройте [Releases](../../releases) репозитория.
+2. Скачайте `AuraVPN.ipa` из последнего релиза.
+
+**Вариант Б — соберите сами за 3 команды (macOS):**
+```bash
+./scripts/build_core.sh        # ядра Xray + tun2socks (нужны Xcode 15+, Go, Python 3)
+flutter pub get                # зависимости Flutter
+./scripts/build_ipa.sh         # → AuraVPN.ipa в корне
+```
+Подробности и решение проблем: [docs/BUILD.md](docs/BUILD.md).
+
+### Шаг 2. Установите через Sideloadly
+
+1. Скачайте [Sideloadly](https://sideloadly.io/) (macOS/Windows).
+2. Подключите iPhone кабелем, откройте Sideloadly.
+3. Перетащите `AuraVPN.ipa` в окно, укажите Apple ID и своё устройство → **Start**.
+4. На iPhone: Настройки → Основные → VPN и управление устройством → доверяйте разработчику.
+5. Откройте **Aura VPN** → импортируйте подписку → нажмите большую кнопку.
+
+Пошагово с картинками и частыми проблемами: **[docs/Sideloadly.md](docs/Sideloadly.md)**.
 
 > ⚠️ **Важно:** функция VPN (Network Extension) требует entitlements
 > `packet-tunnel-provider`. Бесплатный Apple ID **не может** подписать
