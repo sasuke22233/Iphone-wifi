@@ -37,9 +37,9 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Cache native cores
+      - name: Cache native cores (restore)
         id: cache-cores
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             ios/Frameworks
@@ -49,6 +49,15 @@ jobs:
       - name: Build native cores (libXray + hev-socks5-tunnel)
         if: steps.cache-cores.outputs.cache-hit != 'true'
         run: ./scripts/build_core.sh
+
+      - name: Cache native cores (save)
+        if: steps.cache-cores.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ios/Frameworks
+            third_party
+          key: cores-v1-${{ hashFiles('scripts/build_core.sh') }}
 
       - name: Flutter dependencies
         run: flutter pub get
