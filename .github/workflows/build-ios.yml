@@ -15,6 +15,7 @@ on:
         required: false
         default: ""
   push:
+    branches: [main]
     tags: ["v*"]
 
 permissions:
@@ -95,6 +96,19 @@ jobs:
           PY
           fi
           exit $STATUS
+
+      - name: Verify IPA contents
+        run: |
+          unzip -l AuraVPN.ipa > /tmp/zip.txt
+          grep -q "Payload/Runner.app/PlugIns/PacketTunnel.appex" /tmp/zip.txt \
+            || { echo "::error title=IPA::PacketTunnel.appex missing in IPA"; exit 1; }
+          python3 - <<'PY'
+          out = open('/tmp/zip.txt', encoding='utf-8', errors='replace').read()
+          key = '\n'.join(l for l in out.splitlines()
+                          if any(k in l for k in ('.app/', 'appex', 'Frameworks/', 'Info.plist')))
+          key = key[:6000].replace('%', '%25').replace('\n', '%0A')
+          print(f"::notice title=IPA contents::{key}")
+          PY
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
