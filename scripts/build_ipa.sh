@@ -21,6 +21,10 @@ fi
 echo "==> flutter pub get"
 flutter pub get
 
+# Проект использует CocoaPods; SPM-интеграцию Flutter отключаем,
+# чтобы инструмент не пытался мигрировать Xcode-проект.
+flutter config --no-enable-swift-package-manager >/dev/null 2>&1 || true
+
 # Если DEVELOPMENT_TEAM не задан — собираем без подписи
 # (IPA подпишет Sideloadly при установке).
 if [ -n "${DEVELOPMENT_TEAM:-}" ]; then
