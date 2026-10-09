@@ -25,9 +25,9 @@ INCLUDE_DIR="$OUT_DIR/include"
 
 # Закреплённые версии (обновляйте осознанно).
 LIBXRAY_REPO="https://github.com/XTLS/libXray.git"
-LIBXRAY_REF="main"
+LIBXRAY_REF="v26.9.30"
 HEV_REPO="https://github.com/heiher/hev-socks5-tunnel.git"
-HEV_REF="master"
+HEV_REF="2.18.0"
 
 mkdir -p "$THIRD_PARTY" "$OUT_DIR" "$INCLUDE_DIR"
 
@@ -37,8 +37,9 @@ if [ ! -d "$THIRD_PARTY/libXray" ]; then
 fi
 
 cd "$THIRD_PARTY/libXray"
-# cgo-сборка: iOS/iOS Simulator/macOS/tvOS + заголовок libXray.h с CGoInvoke/CGoFree.
-python3 build/main.py apple cgo
+# cgo-сборка (AppleGoBuilder): iOS/iOS Simulator/macOS/tvOS + заголовок
+# libXray.h с CGoInvoke/CGoFree. Команда: `apple go`.
+python3 build/main.py apple go
 
 # Ищем собранный xcframework.
 LIBXRAY_XCFRAMEWORK="$(find "$THIRD_PARTY/libXray" -name 'LibXray.xcframework' -type d | head -n1)"
@@ -58,7 +59,8 @@ fi
 
 echo "==> [2/3] hev-socks5-tunnel ($HEV_REF)"
 if [ ! -d "$THIRD_PARTY/hev-socks5-tunnel" ]; then
-  git clone --recursive --depth 1 --branch "$HEV_REF" "$HEV_REPO" "$THIRD_PARTY/hev-socks5-tunnel"
+  git clone --recursive --shallow-submodules --depth 1 --branch "$HEV_REF" \
+    "$HEV_REPO" "$THIRD_PARTY/hev-socks5-tunnel"
 fi
 
 cd "$THIRD_PARTY/hev-socks5-tunnel"

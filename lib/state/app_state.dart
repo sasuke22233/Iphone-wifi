@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../core/constants.dart';
 import '../models/connection_state.dart';
-import '../models/log_entry.dart';
 import '../models/subscription.dart';
 import '../models/vpn_profile.dart';
 import '../services/app_logger.dart';

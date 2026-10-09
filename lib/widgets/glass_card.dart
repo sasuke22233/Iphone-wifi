@@ -2,8 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../core/theme.dart';
-
 /// Карточка в стиле «матовое стекло».
 class GlassCard extends StatelessWidget {
   const GlassCard({

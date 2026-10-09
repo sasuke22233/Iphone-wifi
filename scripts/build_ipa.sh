@@ -21,8 +21,16 @@ fi
 echo "==> flutter pub get"
 flutter pub get
 
-echo "==> flutter build ios --release"
-flutter build ios --release
+# Если DEVELOPMENT_TEAM не задан — собираем без подписи
+# (IPA подпишет Sideloadly при установке).
+if [ -n "${DEVELOPMENT_TEAM:-}" ]; then
+  BUILD_FLAGS="--release"
+  echo "==> flutter build ios --release (team: $DEVELOPMENT_TEAM)"
+else
+  BUILD_FLAGS="--release --no-codesign"
+  echo "==> flutter build ios --release --no-codesign"
+fi
+flutter build ios $BUILD_FLAGS
 
 APP_PATH="build/ios/iphoneos/Runner.app"
 if [ ! -d "$APP_PATH" ]; then

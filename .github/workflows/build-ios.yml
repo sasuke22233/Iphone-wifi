@@ -1,0 +1,96 @@
+name: Build iOS IPA
+
+# Собирает нативные ядра (Xray-core + hev-socks5-tunnel), приложение и
+# не подписанный IPA для установки через Sideloadly.
+#
+# Запуск:
+#   gh workflow run build-ios.yml
+#   gh workflow run build-ios.yml -f tag=v1.0.0      # приложить к релизу
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to attach the IPA to (optional)"
+        required: false
+        default: ""
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Cache native cores
+        id: cache-cores
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Frameworks
+            third_party
+          key: cores-v1-${{ hashFiles('scripts/build_core.sh') }}
+
+      - name: Build native cores (libXray + hev-socks5-tunnel)
+        if: steps.cache-cores.outputs.cache-hit != 'true'
+        run: ./scripts/build_core.sh
+
+      - name: Flutter dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build IPA
+        run: |
+          set +e
+          ./scripts/build_ipa.sh > /tmp/ipa_build.txt 2>&1
+          STATUS=$?
+          tail -n 250 /tmp/ipa_build.txt
+          python3 - <<'PY'
+          import re
+          out = open('/tmp/ipa_build.txt', encoding='utf-8', errors='replace').read()
+          seen = 0
+          for line in out.splitlines():
+              if re.search(r'\berror[: ]', line, re.I) and 'warning' not in line.lower():
+                  msg = line.strip()[:300].replace('%', '%25').replace('\n', '%0A')
+                  print(f"::error title=xcodebuild::{msg}")
+                  seen += 1
+                  if seen > 40:
+                      break
+          PY
+          exit $STATUS
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AuraVPN-ipa
+          path: AuraVPN.ipa
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          if [ -z "$TAG" ]; then TAG="${{ inputs.tag }}"; fi
+          if [ -n "$TAG" ]; then
+            gh release upload "$TAG" AuraVPN.ipa --clobber
+            echo "IPA attached to release $TAG"
+          else
+            echo "No release tag specified — IPA uploaded as workflow artifact only"
+          fi

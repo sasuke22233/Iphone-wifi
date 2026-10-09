@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../app.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
-import '../models/subscription.dart';
 import '../models/vpn_profile.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/server_tile.dart';

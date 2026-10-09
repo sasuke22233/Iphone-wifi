@@ -21,11 +21,15 @@ class HotspotScreen extends StatefulWidget {
 
 class _HotspotScreenState extends State<HotspotScreen> {
   String? _gateway;
+  bool _gatewayResolved = false;
 
   @override
-  void initState() {
-    super.initState();
-    _resolveGateway();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_gatewayResolved) {
+      _gatewayResolved = true;
+      _resolveGateway();
+    }
   }
 
   Future<void> _resolveGateway() async {
