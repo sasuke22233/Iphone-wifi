@@ -3,9 +3,10 @@ name: Build iOS IPA
 # Собирает нативные ядра (Xray-core + hev-socks5-tunnel), приложение и
 # не подписанный IPA для установки через Sideloadly.
 #
-# Запуск:
-#   gh workflow run build-ios.yml
-#   gh workflow run build-ios.yml -f tag=v1.0.0      # приложить к релизу
+# Триггеры:
+#   - push тега v*  (например: git tag v1.0.0 && git push origin v1.0.0)
+#   - ручной запуск: gh workflow run build-ios.yml -f tag=v1.0.0
+# Если релиз с этим тегом существует — IPA автоматически прикладывается к нему.
 on:
   workflow_dispatch:
     inputs:
@@ -13,8 +14,8 @@ on:
         description: "Release tag to attach the IPA to (optional)"
         required: false
         default: ""
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
 
 permissions:
   contents: write
@@ -86,11 +87,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="${{ github.event.release.tag_name }}"
-          if [ -z "$TAG" ]; then TAG="${{ inputs.tag }}"; fi
-          if [ -n "$TAG" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${{ github.ref_name }}"
+          fi
+          if [ -n "$TAG" ] && gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" AuraVPN.ipa --clobber
             echo "IPA attached to release $TAG"
           else
-            echo "No release tag specified — IPA uploaded as workflow artifact only"
+            echo "No release for '$TAG' — IPA uploaded as workflow artifact only"
           fi
