@@ -102,7 +102,7 @@ class ShareLinkParser {
       quicKey: _nonEmpty(q['key']),
       security: security,
       sni: _nonEmpty(q['sni']) ?? _nonEmpty(q['peer']),
-      allowInsecure: _boolParam(q['allowInsecure']),
+      allowInsecure: _boolValue(q['allowInsecure']),
       fingerprint: _nonEmpty(q['fp']),
       alpn: _splitList(q['alpn']),
       realityPublicKey: _nonEmpty(q['pbk']),
@@ -189,7 +189,7 @@ class ShareLinkParser {
       security: SecurityType.parse(
           q['security'] == 'reality' ? 'reality' : (q['security'] == 'none' ? 'none' : 'tls')),
       sni: _nonEmpty(q['sni']) ?? _nonEmpty(q['peer']),
-      allowInsecure: _boolParam(q['allowInsecure']),
+      allowInsecure: _boolValue(q['allowInsecure']),
       fingerprint: _nonEmpty(q['fp']),
       alpn: _splitList(q['alpn']),
       subscriptionId: subId,
@@ -288,8 +288,8 @@ class ShareLinkParser {
       password: _decodeComponent(uri.userInfo),
       security: SecurityType.tls,
       sni: _nonEmpty(q['sni']) ?? _nonEmpty(q['peer']),
-      allowInsecure: _boolParam(q['insecure']) ||
-          _boolParam(q['allowInsecure']),
+      allowInsecure: _boolValue(q['insecure']) ||
+          _boolValue(q['allowInsecure']),
       alpn: _splitList(q['alpn']),
       obfsPassword: _nonEmpty(q['obfs-password']) ?? _nonEmpty(q['obfsPassword']),
       hysteriaUp: _nonEmpty(q['upmbps']) ?? _nonEmpty(q['up']),
@@ -330,7 +330,7 @@ class ShareLinkParser {
       security: SecurityType.tls,
       sni: _nonEmpty(q['sni']) ?? _nonEmpty(q['peer']),
       allowInsecure:
-          _boolParam(q['allow_insecure']) || _boolParam(q['allowInsecure']),
+          _boolValue(q['allow_insecure']) || _boolValue(q['allowInsecure']),
       alpn: _splitList(q['alpn']),
       fingerprint: _nonEmpty(q['congestion_control']),
       subscriptionId: subId,
@@ -407,28 +407,12 @@ class ShareLinkParser {
     return t.isEmpty ? null : t;
   }
 
-  static bool _boolParam(Map<String, String> map) {
-    for (final e in map.entries) {
-      final v = e.value.toLowerCase();
-      if (v == '1' || v == 'true' || v == 'yes') return true;
-    }
-    return false;
-  }
-
   static bool _boolValue(dynamic v) {
     if (v == null) return false;
     if (v is bool) return v;
     final s = v.toString().toLowerCase();
     return s == '1' || s == 'true' || s == 'yes';
   }
-
-  static bool _boolParamValue(String? v) {
-    final s = (v ?? '').toLowerCase();
-    return s == '1' || s == 'true' || s == 'yes';
-  }
-
-  // ignore: unused_element
-  static bool _unusedBool(String? v) => _boolParamValue(v);
 
   static List<String>? _splitList(String? raw) {
     final v = _nonEmpty(raw);

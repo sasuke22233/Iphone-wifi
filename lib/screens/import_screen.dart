@@ -308,10 +308,10 @@ class _ImportScreenState extends State<ImportScreen>
                     final count =
                         AppStateScope.of(context).importLinks(raw);
                     if (count > 0) {
-                      _toast(S.of(context).import_success_one);
+                      _toast(S.of(context)('import_success_one'));
                       Navigator.of(context).pop();
                     } else {
-                      _toast(S.of(context).import_invalid);
+                      _toast(S.of(context)('import_invalid'));
                     }
                   },
                 ),

@@ -111,7 +111,7 @@ class CoreConfigBuilder {
     ];
 
     final serverIpRule = _serverDirectRule(profile);
-    if (serverIpRule != null) rules.insert(0, serverIpRule);
+    rules.insert(0, serverIpRule);
 
     return {
       'log': {
@@ -346,7 +346,7 @@ class CoreConfigBuilder {
           if (p.transportHost != null && p.transportHost!.isNotEmpty)
             'host': p.transportHost,
           if (p.xhttpExtra != null && p.xhttpExtra!.trim().isNotEmpty)
-            'extra': _tryJson(p.xhttpExtra),
+            'extra': _tryJson(p.xhttpExtra!),
         };
       case TransportType.httpupgrade:
         ss['httpupgradeSettings'] = {

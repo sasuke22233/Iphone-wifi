@@ -5,6 +5,7 @@ import '../app.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
 import '../models/vpn_profile.dart';
+import '../state/app_state.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/server_tile.dart';
 import 'edit_profile_screen.dart';

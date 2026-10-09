@@ -218,7 +218,7 @@ class AuraTheme {
                 ? AuraColors.accent2
                 : AuraColors.textSecondary,
           ),
-          side: WidgetStateProperty.all(Colors.transparent),
+          side: WidgetStateProperty.all(BorderSide.none),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
