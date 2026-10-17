@@ -1,0 +1,62 @@
+# Конфигурация бота магазина донат-товаров (Playerok).
+# Скопируйте в config.toml и заполните под свой магазин.
+
+[bot]
+shop_name = "Aura Store"          # название магазина в сообщениях
+poll_interval_sec = 5             # как часто опрашивать чаты
+credential_ttl_min = 30           # через сколько минут стирать пароли из памяти
+reminder_after_min = 10           # когда напомнить «зависшему» покупателю
+typing_delay_sec = [0.3, 1.2]     # имитация набора ответа (сек)
+
+[marketplace]
+# driver: "mock" (терминал/тесты) или "playerok_web" (живой Playerok через Playwright)
+driver = "mock"
+
+[marketplace.options]
+base_url = "https://playerok.com"
+chats_url = "https://playerok.com/chats"
+storage_state = "playerok_bot/state/playerok_session.json"  # сессия ВАШЕГО аккаунта продавца
+headless = true
+
+[fulfillment]
+# Адаптер выдачи по умолчанию: "mock_game" (симуляция) или "web_game" (рецепт + Playwright)
+adapter = "mock_game"
+
+[fulfillment.options]
+# Для web_game:
+recipes_dir = "playerok_bot/recipes"
+headless = true
+# Для mock_game:
+outcome = "success"               # success | bad_password | need_otp | purchase_error
+
+# ---- Товары (донат-пакеты) ------------------------------------------------
+# credentials_mode:
+#   login             — нужен только логин/ID игрока
+#   login_password    — логин + пароль
+#   login_password_otp — логин + пароль + одноразовый код (2FA)
+
+[[products]]
+id = "pubg-uc-660"
+title = "PUBG Mobile 660 UC"
+game = "pubg"
+adapter = "web_game"              # рецепт recipes/pubg-uc-660.toml или recipes/pubg.toml
+credentials_mode = "login_password"
+quantity = 1
+
+[[products]]
+id = "ff-diamonds-1080"
+title = "Free Fire 1080 алмазов"
+game = "free_fire"
+adapter = "web_game"
+credentials_mode = "login"        # часто достаточно ID игрока
+quantity = 1
+
+# ---- Свои шаблоны сообщений (необязательно) -------------------------------
+# Доступные ключи: greet, order_confirm, ask_login, ask_password, ask_otp,
+# credentials_ok, processing, processing_status, done, failed, cancelled,
+# fallback, fallback_confirm, fallback_login, fallback_password, fallback_otp,
+# reminder, thanks_reply, already_done.
+# Плейсхолдеры: {shop} {product} {order_id} {login_masked} {reason}.
+
+# [templates]
+# greet = "Привет! Это авто-ассистент «{shop}». Готов выдать «{product}»."

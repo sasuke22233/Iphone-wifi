@@ -1,0 +1,59 @@
+# Пример рецепта выдачи для web_game-адаптера.
+# Скопируйте в recipes/<id-товара>.toml или recipes/<игра>.toml
+# и адаптируйте селекторы под магазин конкретной игры.
+
+name = "example_game"
+login_url = "https://game.example.com/login"
+
+[[steps]]
+action = "fill"
+selector = "#login"
+value = "{login}"
+
+[[steps]]
+action = "fill"
+selector = "#password"
+value = "{password}"
+
+[[steps]]
+action = "click"
+selector = "button[type=submit]"
+
+# Если игра просит одноразовый код — бот сам спросит его у покупателя
+# и продолжит с этим шага при повторном запуске.
+[[steps]]
+action = "fill"
+selector = "#otp"
+value = "{otp}"
+
+[[steps]]
+action = "click"
+selector = "#otp-submit"
+
+[[steps]]
+action = "wait_for"
+selector = ".store-page"
+timeout_ms = 15000
+
+[[steps]]
+action = "goto"
+url = "https://game.example.com/store/item-660uc"
+
+[[steps]]
+action = "click"
+selector = "[data-item='660uc'] .buy-button"
+
+[[steps]]
+action = "click"
+selector = ".confirm-purchase"
+
+[[steps]]
+action = "wait_for"
+selector = ".purchase-success"
+timeout_ms = 20000
+
+[[steps]]
+action = "assert_text"
+selector = ".purchase-success"
+text = ""
+error = "магазин игры не подтвердил покупку"

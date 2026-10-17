@@ -1,0 +1,6 @@
+# Ядро бота — только стандартная библиотека Python 3.11+.
+# Ниже — опциональные зависимости для живого режима.
+
+# Playwright — браузерная автоматизация (Playerok + покупка в магазинах игр):
+#   pip install playwright && playwright install chromium
+playwright>=1.40; python_version >= "3.11"
